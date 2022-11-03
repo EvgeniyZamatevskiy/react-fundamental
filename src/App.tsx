@@ -1,51 +1,76 @@
-import React, { FC, useState, FormEvent } from "react"
+import React, { FC, useState } from "react"
+import { TodoLists } from "components"
+import { FilterValueType, TaskType, TodoListType } from "types"
 import "./App.css"
-import { UseState } from "hooks/useState"
-
-type ItemsType = {
-  id: number
-  text: string
-}
-
 
 export const App: FC = () => {
 
-  const [items, setItems] = useState<ItemsType[]>([])
-  const [text, setText] = useState("")
+  const [todoLists, setTodoLists] = useState<TodoListType[]>([
+    {
+      todoListId: 1, filterValue: "All", title: "my first todo",
+      tasks: [
+        {taskId: 1, title: "my first task", isDone: false}
+      ]
+    },
+  ])
+  
+  const handleAddTodoListClick = (title: string): void => {
+    const todoList: TodoListType = {todoListId: Date.now(), title, tasks: [], filterValue: "All"}
+    setTodoLists([...todoLists, todoList])
+  }
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const item = {text, id: Date.now()}
-    setItems([...items, item])
+  const handleRemoveTodoListClick = (todoListId: number): void => {
+    setTodoLists(todoLists.filter(todoList => todoList.todoListId !== todoListId))
+  }
+
+  const handleUpdateTodoListTitleBlurOrKeyDown = (todoListId: number, title: string): void => {
+    setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId ? {...todoList, title} : todoList))
+  }
+
+  const handleAddTaskClick = (todoListId: number, title: string): void => {
+    const task: TaskType = {taskId: Date.now(), title, isDone: false}
+    setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId
+      ? {...todoList, tasks: [...todoList.tasks, task]}
+      : todoList))
+  }
+
+  const handleRemoveTaskClick = (todoListId: number, taskId: number): void => {
+    setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId
+      ? {...todoList, tasks: todoList.tasks.filter(task => task.taskId !== taskId)}
+      : todoList))
+  }
+
+  const handleUpdateTasksTitleBlurOrKeyDown = (todoListId: number, taskId: number, title: string): void => {
+    setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId
+      ? {...todoList, tasks: todoList.tasks.map(task => task.taskId === taskId ? {...task, title} : task)}
+      : todoList))
+  }
+
+  const handleToggleIsDoneChange = (todoListId: number, taskId: number, isDone: boolean): void => {
+    setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId
+      ? {...todoList, tasks: todoList.tasks.map(task => task.taskId === taskId ? {...task, isDone} : task)}
+      : todoList))
+  }
+
+  const handleSelectFilterValueClick = (todoListId: number, filterValue: FilterValueType): void => {
+    setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId
+      ? {...todoList, filterValue: filterValue}
+      : todoList))
   }
 
   return (
     <div>
-      {/*<UseState/>*/}
-      <h3>Список дел</h3>
-      <TodoList items={items}/>
-      <form onSubmit={onSubmit}>
-        <input type="text" value={text} onChange={(event) => setText(event.currentTarget.value)}/>
-        <button>Добавить № {items.length + 1}</button>
-      </form>
-    </div>
-  )
-}
-
-type TodoListPropsType = {
-  items: ItemsType[]
-}
-
-export const TodoList: FC<TodoListPropsType> = ({items}) => {
-
-
-  return (
-    <div>
-      <ul>
-        {items.map((item) => {
-          return <li key={item.id}>{item.text}</li>
-        })}
-      </ul>
+      <TodoLists
+        todoLists={todoLists}
+        handleAddTodoListClick={handleAddTodoListClick}
+        handleRemoveTodoListClick={handleRemoveTodoListClick}
+        handleUpdateTodoListTitleBlurOrKeyDown={handleUpdateTodoListTitleBlurOrKeyDown}
+        handleAddTaskClick={handleAddTaskClick}
+        handleRemoveTaskClick={handleRemoveTaskClick}
+        handleUpdateTasksTitleBlurOrKeyDown={handleUpdateTasksTitleBlurOrKeyDown}
+        handleToggleIsDoneChange={handleToggleIsDoneChange}
+        handleSelectFilterValueClick={handleSelectFilterValueClick}
+      />
     </div>
   )
 }

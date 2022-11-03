@@ -15,7 +15,7 @@ export const UseState: FC = () => {
 
   useEffect(() => {
     const id = setInterval(() => {
-      setSeconds(prev => prev + 1)
+      setSeconds(prevState => prevState + 1)
     }, 1000)
 
     return () => {
