@@ -1,5 +1,10 @@
 export type FilterValueType = "All" | "Active" | "Completed"
 
+export type FilterType = {
+  sort: number
+  query: string
+}
+
 export type TaskType = {
   taskId: number
   title: string

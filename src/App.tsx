@@ -1,6 +1,7 @@
-import React, { FC, useMemo, useState } from "react"
+import React, { FC, useState } from "react"
 import { AddItemForm, TodoListFilter, TodoListList } from "components"
-import { FilterValueType, TaskType, TodoListType } from "types"
+import { FilterType, FilterValueType, TaskType, TodoListType } from "types"
+import { useTodoLists } from "hooks"
 import "./App.css"
 
 export const App: FC = () => {
@@ -19,21 +20,8 @@ export const App: FC = () => {
       ]
     },
   ])
-  const [filter, setFilter] = useState({sort: 0, query: ""})
-
-  const sortedTodoLists = useMemo(() => {
-    const sortValue: keyof TodoListType = filter.sort === 1 ? "title" : "description"
-
-    if (filter.sort !== 0) {
-      return [...todoLists].sort((a, b) => a[sortValue] > b[sortValue] ? 1 : -1)
-    } else {
-      return todoLists
-    }
-  }, [filter.sort, todoLists])
-
-  const sortedAndSearchTodoLists = useMemo(() => {
-    return sortedTodoLists.filter(({title}) => title.toLowerCase().includes(filter.query.toLowerCase()))
-  }, [filter.query, sortedTodoLists])
+  const [filter, setFilter] = useState<FilterType>({sort: 0, query: ""})
+  const sortedAndSearchTodoLists = useTodoLists(todoLists, filter)
 
   const handleAddTodoListClick = (title: string): void => {
     const todoList: TodoListType = {todoListId: Date.now(), title, tasks: [], filterValue: "All", description: "а"}
