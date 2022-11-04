@@ -1,8 +1,8 @@
 import React, { FC, ChangeEvent } from "react"
-import { TaskPropsType } from "./types"
+import { TaskItemPropsType } from "./types"
 import { Button, Checkbox, EditableItem } from "components"
 
-export const Task: FC<TaskPropsType> = (
+export const TaskItem: FC<TaskItemPropsType> = (
   {
     todoListId,
     taskId,

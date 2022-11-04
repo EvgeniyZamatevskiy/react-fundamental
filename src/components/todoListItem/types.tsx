@@ -1,8 +1,11 @@
-import { FilterValueType, TodoListType } from "types"
+import { FilterValueType, TaskType } from "types"
 
-export type TodoListsPropsType = {
-  todoLists: TodoListType[]
-  handleAddTodoListClick: (title: string) => void
+export type TodoListItemPropsType = {
+  todoListId: number
+  title: string
+  filterValue: FilterValueType
+  description: string
+  tasks: TaskType[]
   handleRemoveTodoListClick: (todoListId: number) => void
   handleUpdateTodoListTitleBlurOrKeyDown: (todoListId: number, title: string) => void
   handleAddTaskClick: (todoListId: number, title: string) => void

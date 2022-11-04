@@ -1,8 +1,8 @@
 import React, { FC } from "react"
-import { AddItemForm, NoTasks, Task } from "components"
-import { TasksPropsType } from "./types"
+import { AddItemForm, TaskEmpty, TaskItem } from "components"
+import { TaskListPropsType } from "./types"
 
-export const Tasks: FC<TasksPropsType> = (
+export const TaskList: FC<TaskListPropsType> = (
   {
     tasks,
     todoListId,
@@ -18,7 +18,7 @@ export const Tasks: FC<TasksPropsType> = (
 
   const tasksRender = tasks.map(({taskId, title, isDone}) => {
     return (
-      <Task
+      <TaskItem
         key={taskId}
         todoListId={todoListId}
         taskId={taskId}
@@ -34,7 +34,7 @@ export const Tasks: FC<TasksPropsType> = (
   return (
     <div>
       <AddItemForm handleAddItemClick={secondHandleAddTaskClick}/>
-      {tasks.length ? tasksRender : <NoTasks/>}
+      {tasks.length ? tasksRender : <TaskEmpty/>}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-export type TaskPropsType = {
+export type TaskItemPropsType = {
   todoListId: number
   taskId: number
   title: string

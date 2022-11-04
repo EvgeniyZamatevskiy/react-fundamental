@@ -1,11 +1,10 @@
 import React, { FC } from "react"
-import { AddItemForm, TodoList } from "components"
-import { TodoListsPropsType } from "./types"
+import { TodoListItem } from "components"
+import { TodoListListPropsType } from "./types"
 
-export const TodoLists: FC<TodoListsPropsType> =
+export const TodoListList: FC<TodoListListPropsType> =
   ({
      todoLists,
-     handleAddTodoListClick,
      handleRemoveTodoListClick,
      handleUpdateTodoListTitleBlurOrKeyDown,
      handleAddTaskClick,
@@ -15,17 +14,14 @@ export const TodoLists: FC<TodoListsPropsType> =
      handleSelectFilterValueClick
    }) => {
 
-    const secondHandleAddTodoListClick = (todoListTitle: string): void => {
-      handleAddTodoListClick(todoListTitle)
-    }
-
-    const todoListsRender = todoLists.map(({todoListId, filterValue, title, tasks}) => {
+    const todoListsRender = todoLists.map(({todoListId, filterValue, title, tasks, description}) => {
       return (
-        <TodoList
+        <TodoListItem
           key={todoListId}
           todoListId={todoListId}
           title={title}
           filterValue={filterValue}
+          description={description}
           tasks={tasks}
           handleRemoveTodoListClick={handleRemoveTodoListClick}
           handleUpdateTodoListTitleBlurOrKeyDown={handleUpdateTodoListTitleBlurOrKeyDown}
@@ -38,9 +34,14 @@ export const TodoLists: FC<TodoListsPropsType> =
       )
     })
 
+    if (!todoLists.length) {
+      return (
+        <h1>todo lists not found</h1>
+      )
+    }
+
     return (
       <div>
-        <AddItemForm handleAddItemClick={secondHandleAddTodoListClick}/>
         {todoListsRender}
       </div>
     )

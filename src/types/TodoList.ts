@@ -11,4 +11,5 @@ export type TodoListType = {
   title: string
   filterValue: FilterValueType
   tasks: TaskType[]
+  description: string
 }

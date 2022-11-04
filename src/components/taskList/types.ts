@@ -1,6 +1,6 @@
 import { TaskType } from "types"
 
-export type TasksPropsType = {
+export type TaskListPropsType = {
   tasks: TaskType[]
   todoListId: number
   handleAddTaskClick: (todoListId: number, title: string) => void

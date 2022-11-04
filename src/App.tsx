@@ -1,5 +1,5 @@
-import React, { FC, useState } from "react"
-import { TodoLists } from "components"
+import React, { FC, useMemo, useState } from "react"
+import { AddItemForm, TodoListFilter, TodoListList } from "components"
 import { FilterValueType, TaskType, TodoListType } from "types"
 import "./App.css"
 
@@ -7,16 +7,37 @@ export const App: FC = () => {
 
   const [todoLists, setTodoLists] = useState<TodoListType[]>([
     {
-      todoListId: 1, filterValue: "All", title: "my first todo",
+      todoListId: 1, filterValue: "All", title: "б", description: "аа",
       tasks: [
-        {taskId: 1, title: "my first task", isDone: false}
+        {taskId: 1, title: "my first taskItem", isDone: false}
+      ]
+    },
+    {
+      todoListId: 2, filterValue: "All", title: "а", description: "бб",
+      tasks: [
+        {taskId: 2, title: "my first taskItem", isDone: false}
       ]
     },
   ])
-  
+  const [filter, setFilter] = useState({sort: 0, query: ""})
+
+  const sortedTodoLists = useMemo(() => {
+    const sortValue: keyof TodoListType = filter.sort === 1 ? "title" : "description"
+
+    if (filter.sort !== 0) {
+      return [...todoLists].sort((a, b) => a[sortValue] > b[sortValue] ? 1 : -1)
+    } else {
+      return todoLists
+    }
+  }, [filter.sort, todoLists])
+
+  const sortedAndSearchTodoLists = useMemo(() => {
+    return sortedTodoLists.filter(({title}) => title.toLowerCase().includes(filter.query.toLowerCase()))
+  }, [filter.query, sortedTodoLists])
+
   const handleAddTodoListClick = (title: string): void => {
-    const todoList: TodoListType = {todoListId: Date.now(), title, tasks: [], filterValue: "All"}
-    setTodoLists([...todoLists, todoList])
+    const todoList: TodoListType = {todoListId: Date.now(), title, tasks: [], filterValue: "All", description: "а"}
+    setTodoLists([todoList, ...todoLists])
   }
 
   const handleRemoveTodoListClick = (todoListId: number): void => {
@@ -30,7 +51,7 @@ export const App: FC = () => {
   const handleAddTaskClick = (todoListId: number, title: string): void => {
     const task: TaskType = {taskId: Date.now(), title, isDone: false}
     setTodoLists(todoLists.map(todoList => todoList.todoListId === todoListId
-      ? {...todoList, tasks: [...todoList.tasks, task]}
+      ? {...todoList, tasks: [task, ...todoList.tasks]}
       : todoList))
   }
 
@@ -60,9 +81,10 @@ export const App: FC = () => {
 
   return (
     <div>
-      <TodoLists
-        todoLists={todoLists}
-        handleAddTodoListClick={handleAddTodoListClick}
+      <TodoListFilter filter={filter} setFilter={setFilter}/>
+      <AddItemForm handleAddItemClick={handleAddTodoListClick}/>
+      <TodoListList
+        todoLists={sortedAndSearchTodoLists}
         handleRemoveTodoListClick={handleRemoveTodoListClick}
         handleUpdateTodoListTitleBlurOrKeyDown={handleUpdateTodoListTitleBlurOrKeyDown}
         handleAddTaskClick={handleAddTaskClick}
