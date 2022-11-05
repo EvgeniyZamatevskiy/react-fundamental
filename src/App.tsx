@@ -1,21 +1,28 @@
 import React, { FC, useEffect, useState } from "react"
-import { Button, Loader, Modal, PostFilter, PostForm, PostList } from "components"
+import { Button, Loader, Modal, PostFilter, PostForm, PostList, Pagination } from "components"
 import { FilterType } from "types"
-import { useFetching, usePosts } from "hooks"
+import { useFetching, usePagination, usePosts } from "hooks"
 import { EMPTY_STRING } from "constants/base"
 import { PostType } from "api/posts/types"
 import { POSTS } from "api"
+import { getPageCount } from "utils"
 
 export const App: FC = () => {
 
   const [posts, setPosts] = useState<PostType[]>([])
   const [filter, setFilter] = useState<FilterType>({sort: 0, query: EMPTY_STRING})
   const [isActiveModal, setIsActiveModal] = useState(false)
+  const [totalPostsCount, setTotalPostsCount] = useState(0)
+  const [page, setPage] = useState(1)
+  const [pageCount, setPageCount] = useState(10)
 
   const sortedAndSearchPosts = usePosts(posts, filter)
+  const pages = usePagination(totalPostsCount)
   const [getPosts, isPostsLoading, postErrorMessage] = useFetching(async () => {
-    const {data: posts} = await POSTS.getPosts()
+    const {data: posts, headers} = await POSTS.getPosts(page, pageCount)
     setPosts(posts)
+    const totalCount = getPageCount(Number(headers["x-total-count"]), pageCount)
+    setTotalPostsCount(totalCount)
   })
 
   const handleDeactivateModalClick = (): void => {
@@ -44,9 +51,13 @@ export const App: FC = () => {
     setPosts(posts.map(post => post.id === postId ? {...post, body} : post))
   }
 
+  const handleSetPageClick = (page: number): void => {
+    setPage(page)
+  }
+
   useEffect(() => {
     getPosts()
-  }, [])
+  }, [page])
 
   return (
     <div className="app">
@@ -65,6 +76,12 @@ export const App: FC = () => {
           handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
           handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
         />}
+      <Pagination
+        page={page}
+        pageCount={pageCount}
+        totalItemsCount={totalPostsCount}
+        handleSetPageClick={handleSetPageClick}
+      />
     </div>
   )
 }
