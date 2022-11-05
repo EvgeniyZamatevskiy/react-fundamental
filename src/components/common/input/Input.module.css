@@ -1,0 +1,16 @@
+.input {
+  width: 100%;
+  padding: 5px 15px;
+  margin: 5px 0;
+  border: 1px solid teal;
+}
+
+.errorInput {
+  border: 1px solid red;
+}
+
+.errorMessage {
+  margin: 10px 0;
+  color: red;
+  text-align: center;
+}

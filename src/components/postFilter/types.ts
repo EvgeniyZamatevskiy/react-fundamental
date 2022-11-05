@@ -1,6 +1,6 @@
 import { FilterType } from "types"
 
-export type TodoListFilterPropsType = {
+export type PostFilterPropsType = {
   filter: FilterType
   setFilter: (filter: FilterType) => void
 }

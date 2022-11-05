@@ -8,4 +8,6 @@ export type InputPropsType = Omit<DefaultInputPropsType, "type"> & {
   onEscape?: () => void
   errorMessage?: string
   ref?: Ref<HTMLInputElement>
+  variant?: string
+  additionalErrorMessageClassName?: string
 }

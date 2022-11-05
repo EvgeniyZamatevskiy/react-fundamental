@@ -1,6 +1,8 @@
 import { Key } from "enums"
 import React, { ChangeEvent, KeyboardEvent, FC, forwardRef } from "react"
 import { InputPropsType } from "./types"
+import classes from "./Input.module.css"
+import { EMPTY_STRING } from "constants/base"
 
 export const Input: FC<InputPropsType> = forwardRef((
   {
@@ -10,6 +12,9 @@ export const Input: FC<InputPropsType> = forwardRef((
     onKeyDown,
     onEnter,
     onEscape,
+    className,
+    variant,
+    additionalErrorMessageClassName,
     ...restProps
   }, ref) => {
 
@@ -26,16 +31,25 @@ export const Input: FC<InputPropsType> = forwardRef((
     onEscape && event.key === Key.ESCAPE && onEscape()
   }
 
+  const inputClass = variant ? classes[variant] : classes.input
+  const additionalInputClass = className ? className : EMPTY_STRING
+  const errorInputClass = errorMessage ? classes.errorInput : EMPTY_STRING
+  const inputClasses = `${inputClass} ${additionalInputClass} ${errorInputClass}`
+  const errorMessageClass = classes.errorMessage
+  const additionalErrorMessageClass = additionalErrorMessageClassName ? additionalErrorMessageClassName : EMPTY_STRING
+  const errorMessageClasses = `${errorMessageClass} ${additionalErrorMessageClass}`
+
   return (
     <label>
       <input
+        className={inputClasses}
         type={"text"}
         onChange={onInputChange}
         onKeyDown={onInputKeyDown}
         ref={ref}
         {...restProps}
       />
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div className={errorMessageClasses}>{errorMessage}</div>}
     </label>
   )
 })

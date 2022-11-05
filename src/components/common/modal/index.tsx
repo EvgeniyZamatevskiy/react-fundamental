@@ -13,7 +13,7 @@ export const Modal: FC<ModalPropsType> = ({children, isActiveModal, onDeactivate
   return (
     <div className={overlayClass} onClick={onDeactivateModalClick}>
       <div className={classes.modal} onClick={onAscentCancellationClick}>
-        <Button className={classes.crossContainer} onClick={onDeactivateModalClick}>
+        <Button variant={"modal"} onClick={onDeactivateModalClick}>
           <img src={close} alt="close"/>
         </Button>
         {children}
