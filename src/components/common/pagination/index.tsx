@@ -16,7 +16,7 @@ export const Pagination: FC<PaginationPropsType> =
 
     return (
       <div className={classes.pagination}>
-        {pages.map((p => {
+        {pages.map(((p) => {
 
           const onSetPageClick = (): void => {
             handleSetPageClick(p)

@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState } from "react"
-import { Button, Loader, Modal, PostFilter, PostForm, PostList, Pagination } from "components"
+import React, { ChangeEvent, FC, useEffect, useRef, useState } from "react"
+import { Button, Loader, Modal, PostFilter, PostForm, PostList, Pagination, Select } from "components"
 import { FilterType } from "types"
-import { useFetching, usePagination, usePosts } from "hooks"
+import { useFetching, useObserver, usePosts } from "hooks"
 import { EMPTY_STRING } from "constants/base"
 import { PostType } from "api/posts/types"
 import { POSTS } from "api"
@@ -16,13 +16,17 @@ export const App: FC = () => {
   const [page, setPage] = useState(1)
   const [pageCount, setPageCount] = useState(10)
 
+  const lastElement = useRef<HTMLDivElement>(null)
+
   const sortedAndSearchPosts = usePosts(posts, filter)
-  const pages = usePagination(totalPostsCount)
   const [getPosts, isPostsLoading, postErrorMessage] = useFetching(async () => {
-    const {data: posts, headers} = await POSTS.getPosts(page, pageCount)
-    setPosts(posts)
+    const {data, headers} = await POSTS.getPosts(page, pageCount)
+    setPosts([...posts, ...data])
     const totalCount = getPageCount(Number(headers["x-total-count"]), pageCount)
     setTotalPostsCount(totalCount)
+  })
+  useObserver(lastElement, isPostsLoading, page < totalPostsCount, () => {
+    setPage(page + 1)
   })
 
   const handleDeactivateModalClick = (): void => {
@@ -55,9 +59,13 @@ export const App: FC = () => {
     setPage(page)
   }
 
+  const onSelectPageCountChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    setPageCount(Number(event.currentTarget.value))
+  }
+
   useEffect(() => {
     getPosts()
-  }, [page])
+  }, [page, pageCount])
 
   return (
     <div className="app">
@@ -67,15 +75,25 @@ export const App: FC = () => {
       </Modal>
       <div style={{margin: "30px 0"}}/>
       <PostFilter filter={filter} setFilter={setFilter}/>
+      <Select
+        options={[
+          {id: 5, name: "5"},
+          {id: 10, name: "10"},
+          {id: 25, name: "25"},
+          {id: -1, name: "Показать все"},
+        ]}
+        value={pageCount}
+        onChange={onSelectPageCountChange}
+      />
       {postErrorMessage && <h1 className="title">Произошла ошибка: {postErrorMessage}</h1>}
-      {isPostsLoading
-        ? <div className="loader-container"><Loader/></div>
-        : <PostList
-          posts={sortedAndSearchPosts}
-          handleRemovePostClick={handleRemovePostClick}
-          handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
-          handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
-        />}
+      <PostList
+        posts={sortedAndSearchPosts}
+        handleRemovePostClick={handleRemovePostClick}
+        handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
+        handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
+      />
+      <div ref={lastElement} style={{height: 20, backgroundColor: "red"}}/>
+      {isPostsLoading && <div className="loader-container"><Loader/></div>}
       <Pagination
         page={page}
         pageCount={pageCount}
