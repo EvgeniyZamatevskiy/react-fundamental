@@ -8,10 +8,11 @@ export const PostList: FC<PostListPropsType> =
      posts,
      handleRemovePostClick,
      handleUpdatePostTitleBlurOrKeyDown,
-     handleUpdatePostBodyBlurOrKeyDown
+     handleUpdatePostBodyBlurOrKeyDown,
+     handleToggleIsLikedChange
    }) => {
 
-    const postsRender = posts.map(({userId, id, title, body}) => {
+    const postsRender = posts.map(({userId, id, title, body, isLiked}) => {
       return (
         <PostItem
           key={id}
@@ -19,9 +20,11 @@ export const PostList: FC<PostListPropsType> =
           userId={userId}
           title={title}
           body={body}
+          isLiked={isLiked}
           handleRemovePostClick={handleRemovePostClick}
           handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
           handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
+          handleToggleIsLikedChange={handleToggleIsLikedChange}
         />
       )
     })
@@ -31,7 +34,7 @@ export const PostList: FC<PostListPropsType> =
     }
 
     return (
-      <div>
+      <div className={classes.postList}>
         <h1 className={classes.title}>Список постов</h1>
         {postsRender}
       </div>

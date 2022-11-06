@@ -2,11 +2,12 @@ import React, { FC, KeyboardEvent, useEffect, useRef, useState } from "react"
 import { EditableItemPropsType } from "./types"
 import { Input } from "components"
 import { Key } from "enums"
+import { EMPTY_STRING } from "constants/base";
 
 export const EditableItem: FC<EditableItemPropsType> = ({currentTitle, updateTitle}) => {
 
   const [isEditMode, setIsEditMode] = useState(false)
-  const [updatedTitle, setUpdatedTitle] = useState("")
+  const [updatedTitle, setUpdatedTitle] = useState(EMPTY_STRING)
 
   const inputRef = useRef<HTMLInputElement>(null)
 

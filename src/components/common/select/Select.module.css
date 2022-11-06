@@ -1,0 +1,22 @@
+.select {
+  padding: 5px;
+  border-radius: 2px;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+  color: #000;
+  width: 100%;
+  height: 100%;
+}
+
+.select:focus {
+  border: 1px solid #9d9d9d;
+}
+
+.option {
+  color: #000;
+  background-color: #fff;
+}
+
+.option:checked {
+  background-color: #d9eeff;
+}

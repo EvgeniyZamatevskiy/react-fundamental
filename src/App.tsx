@@ -1,16 +1,14 @@
 import React, { ChangeEvent, FC, useEffect, useState } from "react"
-import { Button, Loader, Modal, PostFilter, PostForm, PostList, Pagination, Select } from "components"
-import { FilterType } from "types"
+import { Button, Loader, Modal, Pagination, PostFilter, PostForm, PostList } from "components"
+import { FilterType, SupplementedPostType } from "types"
 import { useFetching, usePosts } from "hooks"
 import { EMPTY_STRING } from "constants/base"
-import { PostType } from "api/posts/types"
 import { POSTS } from "api"
-import { getPageCount } from "utils"
 
 export const App: FC = () => {
 
-  const [posts, setPosts] = useState<PostType[]>([])
-  const [filter, setFilter] = useState<FilterType>({sort: 0, query: EMPTY_STRING})
+  const [posts, setPosts] = useState<SupplementedPostType[]>([])
+  const [filter, setFilter] = useState<FilterType>({sort: EMPTY_STRING, query: EMPTY_STRING})
   const [isActiveModal, setIsActiveModal] = useState(false)
   const [totalPostsCount, setTotalPostsCount] = useState(0)
   const [page, setPage] = useState(1)
@@ -19,9 +17,9 @@ export const App: FC = () => {
   const sortedAndSearchPosts = usePosts(posts, filter)
   const [getPosts, isPostsLoading, postErrorMessage] = useFetching(async () => {
     const {data: posts, headers} = await POSTS.getPosts(page, pageCount)
-    setPosts(posts)
-    const totalCount = getPageCount(Number(headers["x-total-count"]), pageCount)
-    setTotalPostsCount(totalCount)
+    setPosts(posts.map(post => ({...post, isLiked: false})))
+    const totalPostsCount = Number(headers["x-total-count"])
+    setTotalPostsCount(totalPostsCount)
   })
 
   const handleDeactivateModalClick = (): void => {
@@ -33,7 +31,7 @@ export const App: FC = () => {
   }
 
   const handleAddPostClick = (payload: { title: string, body: string }): void => {
-    const post: PostType = {userId: Date.now(), id: Date.now(), ...payload}
+    const post: SupplementedPostType = {userId: Date.now(), id: Date.now(), isLiked: false, ...payload}
     setPosts([post, ...posts])
     handleDeactivateModalClick()
   }
@@ -54,7 +52,11 @@ export const App: FC = () => {
     setPage(page)
   }
 
-  const onSelectPageCountChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+  const handleToggleIsLikedChange = (postId: number, isLiked: boolean): void => {
+    setPosts(posts.map(post => post.id === postId ? {...post, isLiked} : post))
+  }
+
+  const handleSelectPageCountChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setPageCount(Number(event.currentTarget.value))
     setPage(1)
   }
@@ -65,36 +67,32 @@ export const App: FC = () => {
 
   return (
     <div className="app">
-      <Button className="additionalButton" onClick={onActivateModalClick}>Создать пост</Button>
+      <Button onClick={onActivateModalClick}>Создать пост</Button>
       <Modal isActiveModal={isActiveModal} onDeactivateModalClick={handleDeactivateModalClick}>
         <PostForm handleAddPostClick={handleAddPostClick}/>
       </Modal>
       <div style={{margin: "30px 0"}}/>
       <PostFilter filter={filter} setFilter={setFilter}/>
-      <Select
-        options={[
-          {id: 5, name: "5"},
-          {id: 10, name: "10"},
-          {id: 25, name: "25"},
-          {id: -1, name: "Показать все"},
-        ]}
-        value={pageCount}
-        onChange={onSelectPageCountChange}
-      />
       {postErrorMessage && <h1 className="title">Произошла ошибка: {postErrorMessage}</h1>}
-      <PostList
-        posts={sortedAndSearchPosts}
-        handleRemovePostClick={handleRemovePostClick}
-        handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
-        handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
-      />
-      {isPostsLoading && <div className="loader-container"><Loader/></div>}
-      <Pagination
-        page={page}
-        pageCount={pageCount}
-        totalItemsCount={totalPostsCount}
-        handleSetPageClick={handleSetPageClick}
-      />
+      {isPostsLoading
+        ? <div className="loader-container"><Loader/></div>
+        : <>
+          <PostList
+            posts={sortedAndSearchPosts}
+            handleRemovePostClick={handleRemovePostClick}
+            handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
+            handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
+            handleToggleIsLikedChange={handleToggleIsLikedChange}
+          />
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            totalItemsCount={totalPostsCount}
+            handleSetPageClick={handleSetPageClick}
+            onSelectPageCountChange={handleSelectPageCountChange}
+            isSelectPageCount
+          />
+        </>}
     </div>
   )
 }

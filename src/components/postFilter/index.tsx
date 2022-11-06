@@ -1,10 +1,11 @@
 import React, { FC, ChangeEvent } from "react"
 import { PostFilterPropsType } from "./types"
 import { Input, Select } from "components"
+import classes from "./PostFilter.module.css"
 
 const options = [
-  {id: 1, name: "По названию"},
-  {id: 2, name: "По описанию"},
+  {value: "title", name: "По названию"},
+  {value: "body", name: "По описанию"},
 ]
 
 export const PostFilter: FC<PostFilterPropsType> = ({filter, setFilter}) => {
@@ -14,18 +15,20 @@ export const PostFilter: FC<PostFilterPropsType> = ({filter, setFilter}) => {
   }
 
   const onSelectedSortIdChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-    setFilter({...filter, sort: Number(event.currentTarget.value)})
+    setFilter({...filter, sort: event.currentTarget.value})
   }
 
   return (
     <div>
       <Input value={filter.query} onChange={onSearchQueryChange} placeholder={"Поиск..."}/>
-      <Select
-        defaultValue={"Сортировка"}
-        options={options}
-        value={filter.sort}
-        onChange={onSelectedSortIdChange}
-      />
+      <div className={classes.select}>
+        <Select
+          defaultValue={"Сортировка"}
+          options={options}
+          value={filter.sort}
+          onChange={onSelectedSortIdChange}
+        />
+      </div>
     </div>
   )
 }

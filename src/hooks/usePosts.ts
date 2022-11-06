@@ -1,9 +1,8 @@
 import { useMemo } from "react"
 import { useSortedPosts } from "./useSortedPosts"
-import { FilterType } from "types"
-import { PostType } from "api/posts/types"
+import { FilterType, SupplementedPostType } from "types"
 
-export const usePosts = (posts: PostType[], filter: FilterType) => {
+export const usePosts = (posts: SupplementedPostType[], filter: FilterType) => {
 
   const sortedPosts = useSortedPosts(posts, filter.sort)
 

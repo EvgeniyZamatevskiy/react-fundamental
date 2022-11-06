@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import React, { ChangeEvent, FC } from "react"
 import { Button, Checkbox, EditableItem } from "components"
 import { PostItemPropsType } from "./types"
 import classes from "./PostItem.module.css"
@@ -9,9 +9,11 @@ export const PostItem: FC<PostItemPropsType> = (
     userId,
     title,
     body,
+    isLiked,
     handleRemovePostClick,
     handleUpdatePostTitleBlurOrKeyDown,
-    handleUpdatePostBodyBlurOrKeyDown
+    handleUpdatePostBodyBlurOrKeyDown,
+    handleToggleIsLikedChange
   }) => {
 
   const onRemovePostClick = (): void => {
@@ -26,10 +28,14 @@ export const PostItem: FC<PostItemPropsType> = (
     handleUpdatePostBodyBlurOrKeyDown(id, body)
   }
 
+  const onToggleIsLikedChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    handleToggleIsLikedChange(id, event.currentTarget.checked)
+  }
+
   return (
     <div className={classes.post}>
       <div className={classes.body}>
-        <Checkbox/>
+        <Checkbox checked={isLiked} onChange={onToggleIsLikedChange}/>
         <div className={classes.titleContainer}>
           <strong>
             {id}. <EditableItem currentTitle={title} updateTitle={secondHandleUpdatePostTitleBlurOrKeyDown}/>

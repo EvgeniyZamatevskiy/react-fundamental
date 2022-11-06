@@ -96,6 +96,8 @@ a {
 
 .app {
   width: 800px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .loader-container {
@@ -112,8 +114,4 @@ a {
   text-align: center;
   font-weight: 700;
   font-size: 2em;
-}
-
-.additionalButton {
-  margin-top: 15px;
 }
