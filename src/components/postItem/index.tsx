@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FC } from "react"
 import { Button, Checkbox, EditableItem } from "components"
 import { PostItemPropsType } from "./types"
+import { useNavigate } from "react-router-dom"
 import classes from "./PostItem.module.css"
 
 export const PostItem: FC<PostItemPropsType> = (
@@ -15,6 +16,8 @@ export const PostItem: FC<PostItemPropsType> = (
     handleUpdatePostBodyBlurOrKeyDown,
     handleToggleIsLikedChange
   }) => {
+
+  const navigate = useNavigate()
 
   const onRemovePostClick = (): void => {
     handleRemovePostClick(id)
@@ -44,7 +47,10 @@ export const PostItem: FC<PostItemPropsType> = (
         </div>
       </div>
 
-      <Button onClick={onRemovePostClick}>Удалить</Button>
+      <div className={classes.buttons}>
+        <Button onClick={() => navigate(`/posts/${id}`)}>Открыть</Button>
+        <Button onClick={onRemovePostClick}>Удалить</Button>
+      </div>
     </div>
   )
 }

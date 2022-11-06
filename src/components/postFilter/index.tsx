@@ -19,7 +19,7 @@ export const PostFilter: FC<PostFilterPropsType> = ({filter, setFilter}) => {
   }
 
   return (
-    <div>
+    <div className={classes.postFilter}>
       <Input value={filter.query} onChange={onSearchQueryChange} placeholder={"Поиск..."}/>
       <div className={classes.select}>
         <Select

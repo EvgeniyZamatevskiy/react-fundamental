@@ -9,12 +9,15 @@
 
 .body {
   display: flex;
-  min-width: 88%;
-  max-width: 88%;
+  align-items: center;
 }
 
 .titleContainer {
   margin-left: 10px;
   display: flex;
   flex-direction: column;
+}
+
+.buttons {
+  display: flex;
 }
