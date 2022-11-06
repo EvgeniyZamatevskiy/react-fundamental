@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FC, useEffect, useRef, useState } from "react"
+import React, { ChangeEvent, FC, useEffect, useState } from "react"
 import { Button, Loader, Modal, PostFilter, PostForm, PostList, Pagination, Select } from "components"
 import { FilterType } from "types"
-import { useFetching, useObserver, usePosts } from "hooks"
+import { useFetching, usePosts } from "hooks"
 import { EMPTY_STRING } from "constants/base"
 import { PostType } from "api/posts/types"
 import { POSTS } from "api"
@@ -16,17 +16,12 @@ export const App: FC = () => {
   const [page, setPage] = useState(1)
   const [pageCount, setPageCount] = useState(10)
 
-  const lastElement = useRef<HTMLDivElement>(null)
-
   const sortedAndSearchPosts = usePosts(posts, filter)
   const [getPosts, isPostsLoading, postErrorMessage] = useFetching(async () => {
-    const {data, headers} = await POSTS.getPosts(page, pageCount)
-    setPosts([...posts, ...data])
+    const {data: posts, headers} = await POSTS.getPosts(page, pageCount)
+    setPosts(posts)
     const totalCount = getPageCount(Number(headers["x-total-count"]), pageCount)
     setTotalPostsCount(totalCount)
-  })
-  useObserver(lastElement, isPostsLoading, page < totalPostsCount, () => {
-    setPage(page + 1)
   })
 
   const handleDeactivateModalClick = (): void => {
@@ -61,6 +56,7 @@ export const App: FC = () => {
 
   const onSelectPageCountChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setPageCount(Number(event.currentTarget.value))
+    setPage(1)
   }
 
   useEffect(() => {
@@ -92,7 +88,6 @@ export const App: FC = () => {
         handleUpdatePostTitleBlurOrKeyDown={handleUpdatePostTitleBlurOrKeyDown}
         handleUpdatePostBodyBlurOrKeyDown={handleUpdatePostBodyBlurOrKeyDown}
       />
-      <div ref={lastElement} style={{height: 20, backgroundColor: "red"}}/>
       {isPostsLoading && <div className="loader-container"><Loader/></div>}
       <Pagination
         page={page}
