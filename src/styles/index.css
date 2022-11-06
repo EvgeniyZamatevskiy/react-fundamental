@@ -100,19 +100,3 @@ a {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
-.loader-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-}
-
-.title {
-  margin-top: 50px;
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 2em;
-}

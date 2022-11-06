@@ -1,17 +1,26 @@
-import React, { FC } from "react"
-import { Navigate, Route, Routes } from "react-router-dom"
-import { About, Post, Posts } from "pages"
-import classes from "./AppRouter.module.css"
+import React, { FC, Suspense, useContext } from "react"
+import { Route, Routes } from "react-router-dom"
+import { privateRoutes, publicRoutes } from "router"
+import { AuthContext } from "context"
+import { Loader } from "components"
 
 export const AppRouter: FC = () => {
+
+  const {isAuth} = useContext(AuthContext)
+
   return (
-    <Routes>
-      <Route path={"/"} element={<Navigate to={"/posts"}/>}/>
-      <Route path={"/posts"} element={<Posts/>}/>
-      <Route path={"/posts/:postId"} element={<Post/>}/>
-      <Route path={"/about"} element={<About/>}/>
-      <Route path={"*"} element={<Navigate to={"/404"}/>}/>
-      <Route path={"/404"} element={<h1>Page not found 404</h1>}/>
-    </Routes>
+    <>
+      {isAuth
+        ? <Suspense fallback={<Loader/>}>
+          <Routes>
+            {privateRoutes.map(({path, element}) => <Route key={path} path={path} element={element}/>)}
+          </Routes>
+        </Suspense>
+        : <Suspense fallback={<Loader/>}>
+          <Routes>
+            {publicRoutes.map(({path, element}) => <Route key={path} path={path} element={element}/>)}
+          </Routes>
+        </Suspense>}
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import { instance } from "api/config"
-import { PostType } from "./types"
+import { CommentType, PostType } from "./types"
 
 export const POSTS = {
   getPosts(page: number, pageCount: number) {
@@ -9,5 +9,11 @@ export const POSTS = {
         _limit: pageCount
       }
     })
+  },
+  getPost(postId: number) {
+    return instance.get<PostType>(`posts/${postId}`)
+  },
+  getComments(postId: number) {
+    return instance.get<CommentType[]>(`posts/${postId}/comments`)
   }
 }

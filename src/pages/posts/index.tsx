@@ -4,6 +4,7 @@ import { FilterType, SupplementedPostType } from "types"
 import { useFetching, usePosts } from "hooks"
 import { EMPTY_STRING } from "constants/base"
 import { POSTS } from "api"
+import classes from "./Posts.module.css"
 
 export const Posts: FC = () => {
 
@@ -66,15 +67,15 @@ export const Posts: FC = () => {
   }, [page, pageCount])
 
   return (
-    <div className="app">
+    <div>
       <Button onClick={onActivateModalClick}>Создать пост</Button>
       <Modal isActiveModal={isActiveModal} onDeactivateModalClick={handleDeactivateModalClick}>
         <PostForm handleAddPostClick={handleAddPostClick}/>
       </Modal>
       <PostFilter filter={filter} setFilter={setFilter}/>
-      {postErrorMessage && <h1 className="title">Произошла ошибка: {postErrorMessage}</h1>}
+      {postErrorMessage && <h1 className={classes.title}>Произошла ошибка: {postErrorMessage}</h1>}
       {isPostsLoading
-        ? <div className="loader-container"><Loader/></div>
+        ? <div className={classes.loaderContainer}><Loader/></div>
         : <>
           <PostList
             posts={sortedAndSearchPosts}

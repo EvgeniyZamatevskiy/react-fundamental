@@ -3,6 +3,7 @@ import { Button, Checkbox, EditableItem } from "components"
 import { PostItemPropsType } from "./types"
 import { useNavigate } from "react-router-dom"
 import classes from "./PostItem.module.css"
+import { Path } from "enums"
 
 export const PostItem: FC<PostItemPropsType> = (
   {
@@ -35,6 +36,10 @@ export const PostItem: FC<PostItemPropsType> = (
     handleToggleIsLikedChange(id, event.currentTarget.checked)
   }
 
+  const onNavigateToPostsClick = (): void => {
+    navigate(`${Path.POSTS}/${id}`)
+  }
+
   return (
     <div className={classes.post}>
       <div className={classes.body}>
@@ -48,7 +53,7 @@ export const PostItem: FC<PostItemPropsType> = (
       </div>
 
       <div className={classes.buttons}>
-        <Button onClick={() => navigate(`/posts/${id}`)}>Открыть</Button>
+        <Button onClick={onNavigateToPostsClick}>Открыть</Button>
         <Button onClick={onRemovePostClick}>Удалить</Button>
       </div>
     </div>
