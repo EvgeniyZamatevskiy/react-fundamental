@@ -24,10 +24,10 @@ export const Pagination: FC<PaginationPropsType> =
 
     const [portionNumber, setPortionNumber] = useState(1)
 
-    const pagesCount = Math.ceil(totalItemsCount / pageCount)
-    const pages = usePages(pagesCount)
+    // const pagesCount = Math.ceil(totalItemsCount / pageCount)
+    const pages = usePages(totalItemsCount)
 
-    const portionCount = Math.ceil(pagesCount / portionSize)
+    const portionCount = Math.ceil(totalItemsCount / portionSize)
     const leftPortionPageNumber = (portionNumber - 1) * portionSize + 1
     const rightPortionPageNumber = portionNumber * portionSize
     const pagesFiltered = pages.filter(p => p >= leftPortionPageNumber && p <= rightPortionPageNumber)

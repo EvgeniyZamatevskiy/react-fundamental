@@ -1,16 +1,16 @@
 import { useMemo } from "react"
 
-export const usePages = (pagesCount: number) => {
+export const usePages = (totalItemsCount: number) => {
 
   const pages = useMemo(() => {
     let result: number[] = []
 
-    for (let i = 1; i <= pagesCount; i++) {
+    for (let i = 1; i <= totalItemsCount; i++) {
       result.push(i)
     }
 
     return result
-  }, [pagesCount])
+  }, [totalItemsCount])
 
   return pages
 }

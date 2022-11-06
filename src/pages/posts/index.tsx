@@ -5,6 +5,7 @@ import { useFetching, usePosts } from "hooks"
 import { EMPTY_STRING } from "constants/base"
 import { POSTS } from "api"
 import classes from "./Posts.module.css"
+import { getPagesCount } from "utils";
 
 export const Posts: FC = () => {
 
@@ -19,7 +20,7 @@ export const Posts: FC = () => {
   const [getPosts, isPostsLoading, postErrorMessage] = useFetching(async () => {
     const {data: posts, headers} = await POSTS.getPosts(page, pageCount)
     setPosts(posts.map(post => ({...post, isLiked: false})))
-    const totalPostsCount = Number(headers["x-total-count"])
+    const totalPostsCount = getPagesCount(Number(headers["x-total-count"]), pageCount)
     setTotalPostsCount(totalPostsCount)
   })
 
